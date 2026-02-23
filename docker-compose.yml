@@ -1,0 +1,32 @@
+services:
+  app:
+    build: .
+    container_name: anesth_app
+    restart: unless-stopped
+    environment:
+      - APP_USER=HPPS
+      - APP_PASS=HPPS*
+    volumes:
+      - ./app.db:/app/app.db
+      - ./static:/app/static
+      - ./docs:/app/docs
+      - ./Recommandations:/app/Recommandations
+      - ./planning:/app/planning
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+volumes:
+  caddy_data:
+  caddy_config:
